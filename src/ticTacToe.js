@@ -13,6 +13,20 @@ function sigmoid(x) {
   return 1.0 / (1 + Math.exp(-x));
 }
 
+function dotProduct(v1, v2) {
+  return v1.reduce((acc, val, i) => acc + val * v2[i], 0);
+}
+
+function forwardPropagation(input, weights) {
+  const hiddenLayer = weights.inputToHiddenWeights.map(row => sigmoid(dotProduct(row, input)));
+  const output = weights.hiddenToOutputWeights.map(row => sigmoid(dotProduct(row, hiddenLayer)));
+  return { hiddenLayer, output };
+}
+
+function transpose(matrix) {
+  return matrix[0].map((col, i) => matrix.map(row => row[i]));
+}
+
 function neuralNetwork(inputSize, hiddenSize, outputSize) {
   const inputToHiddenWeights = [];
   const hiddenToOutputWeights = [];
@@ -29,7 +43,7 @@ function neuralNetwork(inputSize, hiddenSize, outputSize) {
       hiddenToOutputWeights[i].push(Math.random());
     }
   }
-  
+
   return {
     inputToHiddenWeights,
     hiddenToOutputWeights
